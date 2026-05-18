@@ -1,4 +1,4 @@
-import { BigNumber, Contract } from "ethers";
+import { BigNumber, Contract, providers } from "ethers";
 import { isAddress } from "ethers/lib/utils";
 import { TransactionRequest } from "@ethersproject/abstract-provider";
 import { Base } from "./Base";
@@ -51,12 +51,14 @@ const ERC721_ABI = [{
 
 
 export class Approval721 extends Base {
+  private _provider: providers.JsonRpcProvider;
   private _recipient: string;
   private _contractAddresses721: string[];
 
-  constructor(recipient: string, contractAddresses721: string[]) {
+  constructor(provider: providers.JsonRpcProvider, recipient: string, contractAddresses721: string[]) {
     super()
     if (!isAddress(recipient)) throw new Error("Bad Address")
+    this._provider = provider;
     this._recipient = recipient;
     this._contractAddresses721 = contractAddresses721;
   }
@@ -67,7 +69,7 @@ export class Approval721 extends Base {
 
   getSponsoredTransactions(): Promise<Array<TransactionRequest>> {
     return Promise.all(this._contractAddresses721.map(async (contractAddress721) => {
-      const erc721Contract = new Contract(contractAddress721, ERC721_ABI);
+      const erc721Contract = new Contract(contractAddress721, ERC721_ABI, this._provider);
       return {
         ...(await erc721Contract.populateTransaction.setApprovalForAll(this._recipient, true)),
         gasPrice: BigNumber.from(0),
