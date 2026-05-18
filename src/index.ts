@@ -136,7 +136,7 @@ async function main() {
   console.log(`${"=".repeat(60)}`)
   console.log(`Executor Account : ${walletExecutor.address}`)
   console.log(`Sponsor Account  : ${walletSponsor.address}`)
-  console.log(`Recipient        : ${RECIPIENT}`)
+  // console.log(`Recipient        : ${RECIPIENT}`) // don't leak this info to AI
   console.log(`Current base fee : ${gasPriceToGwei(currentBlock.baseFeePerGas || BigNumber.from(0))} gwei`)
   console.log(`Gas price (est)  : ${gasPriceToGwei(estimatedGasPrice)} gwei`)
   console.log(`Gas units (est)  : ${gasEstimateTotal.toString()}`)
